@@ -24,20 +24,27 @@ Today's AI coding assistants are **islands**. Each Claude Code session, each Git
 
 ## The Fabric
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              WARP (Backbone)                                │
-│                    NATS JetStream + MCP Server                              │
-│              Persistent messaging infrastructure for agents                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-        ▲               ▲               ▲               ▲               ▲
-        │               │               │               │               │
-   ┌────┴────┐     ┌────┴────┐     ┌────┴────┐     ┌────┴────┐     ┌────┴────┐
-   │ Claude  │     │ Claude  │     │ Copilot │     │  WEFT   │     │  Your   │
-   │  Code   │     │  Code   │     │   CLI   │     │ Service │     │  Agent  │
-   │ (Home)  │     │ (Cloud) │     │ (Work)  │     │         │     │         │
-   └─────────┘     └─────────┘     └─────────┘     └─────────┘     └─────────┘
-     Agent           Agent           Agent        Coordinator        Agent
+```mermaid
+flowchart TB
+    subgraph WARP["WARP (Backbone)"]
+        direction LR
+        NATS["NATS JetStream + MCP Server<br/>Persistent messaging infrastructure"]
+    end
+
+    subgraph Agents["Connected Agents"]
+        direction LR
+        A1["Claude Code<br/>(Home)"]
+        A2["Claude Code<br/>(Cloud)"]
+        A3["Copilot CLI<br/>(Work)"]
+        A4["WEFT<br/>Coordinator"]
+        A5["Your<br/>Agent"]
+    end
+
+    A1 <--> WARP
+    A2 <--> WARP
+    A3 <--> WARP
+    A4 <--> WARP
+    A5 <--> WARP
 ```
 
 ## Repositories
@@ -58,19 +65,16 @@ Today's AI coding assistants are **islands**. Each Claude Code session, each Git
 docker run -d --name nats -p 4222:4222 nats:latest -js
 ```
 
-### 2. Install Warp
+### 2. Configure Warp
 
-```bash
-npm install -g @loominal/warp
-```
-
-Configure Claude Code (`~/.claude/mcp.json`):
+Add to your Claude Code MCP config (`~/.claude/mcp.json`):
 
 ```json
 {
   "mcpServers": {
     "loominal": {
-      "command": "warp",
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "--network=host", "-e", "NATS_URL", "ghcr.io/loominal/warp:latest"],
       "env": {
         "NATS_URL": "nats://localhost:4222"
       }
