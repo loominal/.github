@@ -31,20 +31,21 @@ flowchart TB
         NATS["NATS JetStream + MCP Server<br/>Persistent messaging infrastructure"]
     end
 
+    WEFT["WEFT<br/>Coordinator"]
+
     subgraph Agents["Connected Agents"]
         direction LR
         A1["Claude Code<br/>(Home)"]
         A2["Claude Code<br/>(Cloud)"]
         A3["Copilot CLI<br/>(Work)"]
-        A4["WEFT<br/>Coordinator"]
-        A5["Your<br/>Agent"]
+        A4["Your<br/>Agent"]
     end
 
     A1 <--> WARP
     A2 <--> WARP
     A3 <--> WARP
     A4 <--> WARP
-    A5 <--> WARP
+    WEFT <--> WARP
 ```
 
 ## Repositories
