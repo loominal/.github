@@ -11,54 +11,14 @@
 
 Loominal is infrastructure for multi-agent AI systems. Built on [NATS JetStream](https://nats.io/) and the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/), it transforms isolated AI assistants into a coordinated fabric of collaborating agents.
 
-## The Problem
+## Components
 
-Today's AI coding assistants are **islands**. Each Claude Code session, each GitHub Copilot instance operates in complete isolation. There's no way for them to:
-
-- Share context or findings with other agents
-- Hand off work based on capabilities or access rights
-- Coordinate on complex, multi-part tasks
-- Scale up or down based on workload
-
-**Loominal weaves them together.**
-
-## The Fabric
-
-```mermaid
-flowchart TB
-    subgraph WARP["WARP"]
-        direction LR
-        MCP["MCP Server"]
-        NATS["NATS JetStream"]
-        MCP <--> NATS
-    end
-
-    WEFT["WEFT<br/>Coordinator"]
-
-    subgraph Agents["Agents"]
-        direction LR
-        A1["Claude Code<br/>(Home)"]
-        A2["Claude Code<br/>(Cloud)"]
-        A3["Copilot CLI<br/>(Work)"]
-        A4["Your Agent"]
-    end
-
-    A1 <--> WARP
-    A2 <--> WARP
-    A3 <--> WARP
-    A4 <--> WARP
-    WEFT <--> WARP
-```
-
-## Repositories
-
-| Repository | Description |
-|------------|-------------|
-| **[warp](https://github.com/loominal/warp)** | MCP server providing 16 tools for agent communication — messaging backbone |
-| **[weft](https://github.com/loominal/weft)** | Work coordinator with intelligent routing and dynamic agent spin-up |
-| **[pattern](https://github.com/loominal/pattern)** | MCP server for persistent agent memory across sessions |
-| **[tools](https://github.com/loominal/tools)** | Docker images and GitHub Actions workflows for CI/CD integration |
-| **[loominal](https://github.com/loominal/loominal)** | Project overview and documentation |
+| Component | Purpose |
+|-----------|---------|
+| **[Warp](https://github.com/loominal/warp)** | MCP server providing messaging backbone — 16 tools for agent communication |
+| **[Weft](https://github.com/loominal/weft)** | Coordinator service for work routing, agent lifecycle, and scaling |
+| **[Pattern](https://github.com/loominal/pattern)** | MCP server for persistent agent memory across sessions |
+| **[Tools](https://github.com/loominal/tools)** | Docker images and GitHub Actions workflows for CI/CD |
 
 ## Quick Start
 
@@ -70,7 +30,7 @@ docker run -d --name nats -p 4222:4222 nats:latest -js
 
 ### 2. Configure Warp
 
-Add to your Claude Code MCP config (`~/.claude/mcp.json`):
+Add to Claude Code MCP config (`~/.claude/mcp.json`):
 
 ```json
 {
@@ -98,13 +58,9 @@ Your agents can now discover each other, send messages, and coordinate work acro
 - **Work Queues** with capability-based routing
 - **Dynamic Scaling** via SSH, Kubernetes, GitHub Actions
 
-## Status
-
-**Beta Release** — All core features implemented and tested. Ready for early adopters.
-
 ## License
 
-MIT License
+MIT
 
 ---
 
