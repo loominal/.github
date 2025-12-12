@@ -26,19 +26,21 @@ Today's AI coding assistants are **islands**. Each Claude Code session, each Git
 
 ```mermaid
 flowchart TB
-    subgraph WARP["WARP (Backbone)"]
+    subgraph WARP["WARP"]
         direction LR
-        NATS["NATS JetStream + MCP Server<br/>Persistent messaging infrastructure"]
+        MCP["MCP Server"]
+        NATS["NATS JetStream"]
+        MCP <--> NATS
     end
 
     WEFT["WEFT<br/>Coordinator"]
 
-    subgraph Agents["Connected Agents"]
+    subgraph Agents["Agents"]
         direction LR
         A1["Claude Code<br/>(Home)"]
         A2["Claude Code<br/>(Cloud)"]
         A3["Copilot CLI<br/>(Work)"]
-        A4["Your<br/>Agent"]
+        A4["Your Agent"]
     end
 
     A1 <--> WARP
